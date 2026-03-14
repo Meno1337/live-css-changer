@@ -1,122 +1,360 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-<meta charset="UTF-8">
+  <meta charset="UTF-8">
 
-<style>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
 
-body {
-  width: 400px;
-  padding: 10px;
-  background: #f4f4f4;
-  font-family: sans-serif;
-  box-sizing: border-box;
-}
+    body {
+      width: 420px;
+      padding: 12px 12px 14px;
+      background: #111827;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      box-sizing: border-box;
+      color: #e5e7eb;
+      border-radius: 12px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(4px);
+      animation: popup-fade-in 180ms ease-out forwards;
+    }
 
-#editor-container {
-  height: 180px;
-  border: 1px solid #ccc;
-}
+    @keyframes popup-fade-in {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-.CodeMirror {
-  height: 100% !important;
-}
+    h3 {
+      margin: 0 0 4px;
+      font-size: 16px;
+      font-weight: 600;
+    }
 
-.btns {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
+    #site-info {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
 
-button {
-  flex: 1;
-  padding: 10px;
-  cursor: pointer;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  color: white;
-}
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #020617;
+      border: 1px solid #1f2937;
+    }
 
-#apply-btn { background: #007bff; }
-#reset-btn { background: #6c757d; }
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
 
-#presets{
-margin-top:10px;
-display:flex;
-flex-direction:column;
-gap:6px;
-}
+    #editor-container {
+      height: 190px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #1f2937;
+    }
 
-#presets button{
-padding:6px;
-cursor:pointer;
-border:1px solid #ccc;
-background:#fff;
-border-radius:4px;
-color:black;
-}
+    .CodeMirror {
+      height: 100% !important;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 13px;
+    }
 
-#example-text{
-margin-top:6px;
-font-size:12px;
-color:#555;
-}
+    .section {
+      margin-top: 10px;
+    }
 
-</style>
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #d1d5db;
+    }
 
+    #example-text {
+      margin-top: 4px;
+      font-size: 11px;
+      color: #9ca3af;
+    }
 
-<!-- CodeMirror -->
+    #quick-presets,
+    #user-presets {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
 
-<link rel="stylesheet" href="codemirror-5.65.21/lib/codemirror.css">
-<link rel="stylesheet" href="codemirror-5.65.21/addon/hint/show-hint.css">
+    .preset-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+    }
 
-<script src="codemirror-5.65.21/lib/codemirror.js"></script>
-<script src="codemirror-5.65.21/mode/css/css.js"></script>
+    .preset-label {
+      width: 90px;
+      color: #d1d5db;
+      flex-shrink: 0;
+    }
 
-<script src="codemirror-5.65.21/addon/hint/show-hint.js"></script>
-<script src="codemirror-5.65.21/addon/hint/css-hint.js"></script>
+    .preset-row input[type="color"] {
+      width: 32px;
+      height: 20px;
+      padding: 0;
+      border-radius: 4px;
+      border: 1px solid #1f2937;
+      background: #020617;
+    }
 
+    .preset-row input[type="number"],
+    .preset-row select {
+      flex: 1;
+      padding: 3px 6px;
+      border-radius: 4px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 11px;
+    }
+
+    .preset-suffix {
+      color: #9ca3af;
+      font-size: 11px;
+    }
+
+    .preset-apply {
+      padding: 4px 8px;
+      font-size: 11px;
+      border-radius: 4px;
+      border: 1px solid #1f2937;
+      background: #111827;
+      color: #e5e7eb;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .preset-apply:hover {
+      border-color: #3b82f6;
+    }
+
+    .btns {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    button.primary,
+    button.secondary {
+      flex: 1;
+      padding: 9px 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12px;
+      color: white;
+    }
+
+    button.primary {
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+    }
+
+    button.primary:hover {
+      filter: brightness(1.05);
+    }
+
+    button.secondary {
+      background: #374151;
+    }
+
+    button.secondary:hover {
+      filter: brightness(1.05);
+    }
+
+    #user-presets-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    #preset-name {
+      flex: 1;
+      padding: 4px 6px;
+      border-radius: 4px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 11px;
+    }
+
+    #preset-name::placeholder {
+      color: #6b7280;
+    }
+
+    #save-preset-btn {
+      padding: 6px 8px;
+      font-size: 11px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      background: #4b5563;
+      color: #e5e7eb;
+      white-space: nowrap;
+    }
+
+    #save-preset-btn:hover {
+      filter: brightness(1.05);
+    }
+
+    #user-presets-list {
+      margin-top: 4px;
+      display: flex;
+      gap: 6px;
+    }
+
+    #user-presets-select {
+      flex: 1;
+      padding: 4px 6px;
+      border-radius: 4px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 11px;
+    }
+
+    #user-presets-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    #user-presets-actions button {
+      padding: 4px 6px;
+      font-size: 11px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      background: #374151;
+      color: #e5e7eb;
+    }
+
+    #user-presets-actions button:hover {
+      filter: brightness(1.05);
+    }
+
+    .muted {
+      opacity: 0.7;
+    }
+  </style>
+
+  <!-- CodeMirror -->
+  <link rel="stylesheet" href="codemirror-5.65.21/lib/codemirror.css">
+  <link rel="stylesheet" href="codemirror-5.65.21/addon/hint/show-hint.css">
+
+  <script src="codemirror-5.65.21/lib/codemirror.js"></script>
+  <script src="codemirror-5.65.21/mode/css/css.js"></script>
+
+  <script src="codemirror-5.65.21/addon/hint/show-hint.js"></script>
+  <script src="codemirror-5.65.21/addon/hint/css-hint.js"></script>
 </head>
 
-
-
 <body>
+  <div id="site-info">
+    <span class="pill">
+      <span class="pill-dot"></span>
+      <span id="site-label">Текущая вкладка</span>
+    </span>
+  </div>
 
-<h3>Live CSS Editor</h3>
+  <h3>Live CSS Editor</h3>
 
-<div id="editor-container"></div>
+  <div id="editor-container"></div>
 
-<div id="example-text">
-Пример: <code>* { background-color: red; }</code>
-</div>
+  <div id="example-text">
+    Пример: <code>* { background-color: red; }</code>
+  </div>
 
+  <div class="section" id="quick-presets">
+    <div class="section-title">Быстрые пресеты</div>
 
-<div id="presets">
+    <div class="preset-row">
+      <span class="preset-label">Цвет фона</span>
+      <input type="color" id="bg-color-input" value="#ffffff">
+      <button id="preset-bg-btn" class="preset-apply">OK</button>
+    </div>
 
-<h4>Пресеты</h4>
+    <div class="preset-row">
+      <span class="preset-label">Размер текста</span>
+      <input type="number" id="font-size-input" min="8" max="72" value="18">
+      <span class="preset-suffix">px</span>
+      <button id="preset-fontsize-btn" class="preset-apply">OK</button>
+    </div>
 
-<button id="preset-bg">Изменить цвет фона</button>
+    <div class="preset-row">
+      <span class="preset-label">Шрифт</span>
+      <select id="font-family-select">
+        <option
+          value="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+          System UI
+        </option>
+        <option value="Arial, Helvetica, sans-serif">Arial</option>
+        <option
+          value="'Roboto', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+          Roboto (fallback)
+        </option>
+        <option
+          value="'Open Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+          Open Sans (fallback)
+        </option>
+        <option
+          value="'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+          Montserrat (fallback)
+        </option>
+        <option value="Georgia, 'Times New Roman', serif">Georgia</option>
+        <option value="'Courier New', Courier, monospace">Courier New</option>
+      </select>
+      <button id="preset-fontfamily-btn" class="preset-apply">OK</button>
+    </div>
+  </div>
 
-<button id="preset-fontsize">Размер шрифта всей страницы</button>
+  <div class="section" id="user-presets">
+    <div class="section-title">Мои пресеты</div>
+    <div id="user-presets-header">
+      <input id="preset-name" type="text" placeholder="Название пресета">
+      <button id="save-preset-btn">Сохранить</button>
+    </div>
+    <div id="user-presets-list">
+      <select id="user-presets-select">
+        <option value="">Нет сохранённых пресетов</option>
+      </select>
+      <div id="user-presets-actions">
+        <button id="apply-user-preset-btn">Применить</button>
+        <button id="delete-user-preset-btn" class="muted">Удалить</button>
+      </div>
+    </div>
+  </div>
 
-<button id="preset-fontfamily">Название шрифта</button>
+  <div class="btns">
+    <button id="apply-btn" class="primary">ПРИМЕНИТЬ</button>
+    <button id="reset-btn" class="secondary">СБРОСИТЬ</button>
+  </div>
 
-</div>
-
-
-<div class="btns">
-
-<button id="apply-btn">ПРИМЕНИТЬ</button>
-
-<button id="reset-btn">СБРОСИТЬ</button>
-
-</div>
-
-
-<script src="popup.js"></script>
-
+  <script src="popup.js"></script>
 </body>
-
 </html>

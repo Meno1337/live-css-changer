@@ -15,7 +15,10 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Live CSS Editor"
+    "default_title": "Live CSS Editor",
+    "default_icon": {
+    "128": "icons/icon.png"
+    }
   },
   "background": {
     "service_worker": "background.js"

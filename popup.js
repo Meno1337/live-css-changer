@@ -15,6 +15,17 @@ editor.on("inputRead", (cm, change) => {
 
 const USER_PRESETS_KEY = "userPresets";
 
+// Слушаем сообщения от background.js
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log("Popup received message:", request.type);
+  if (request.type === 'elementSelected') {
+    console.log("Showing dialog for element:", request.data);
+    showElementSelectionDialog(request.data);
+  }
+  sendResponse({ received: true });
+  return true; // Необходимо для асинхронных sendResponse
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   chrome.storage.local.get(["editorText"], (res) => {
     if (res.editorText) {
@@ -25,6 +36,15 @@ document.addEventListener("DOMContentLoaded", () => {
   updateSiteLabel();
   loadCssForSite();
   initUserPresets();
+  
+  // Проверяем, есть ли сохраненная информация об элементе (если popup был закрыт при клике на меню)
+  chrome.storage.session.get(['pendingElement'], (res) => {
+    if (res.pendingElement) {
+      console.log("Found pending element in storage:", res.pendingElement);
+      showElementSelectionDialog(res.pendingElement);
+      chrome.storage.session.remove('pendingElement');
+    }
+  });
 });
 
 editor.on("change", () => {
@@ -270,5 +290,146 @@ function deleteSelectedPreset() {
       renderUserPresets();
     });
   });
+}
+
+// Функция для показа диалога выбора селектора
+function showElementSelectionDialog(elementData) {
+  // Создаём модальное окно
+  const modal = document.createElement('div');
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+  `;
+  
+  const dialog = document.createElement('div');
+  dialog.style.cssText = `
+    background: #111827;
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid #1f2937;
+    min-width: 300px;
+    color: #e5e7eb;
+  `;
+  
+  const title = document.createElement('h3');
+  title.textContent = 'Выбор селектора';
+  title.style.cssText = 'margin: 0 0 12px; font-size: 16px;';
+  
+  const content = document.createElement('div');
+  content.style.cssText = 'margin-bottom: 12px; font-size: 12px;';
+  content.innerHTML = `
+    <p style="margin: 0 0 8px; color: #9ca3af;">
+      Выбранный элемент: <strong>${elementData.tagName}</strong>
+    </p>
+    <p style="margin: 0 0 8px; color: #9ca3af;">
+      Выберите что добавить:
+    </p>
+  `;
+  
+  const buttonContainer = document.createElement('div');
+  buttonContainer.style.cssText = 'display: flex; gap: 8px;';
+  
+  // Кнопка для добавления селектора по типу элемента
+  const btnType = document.createElement('button');
+  btnType.textContent = `Тип (${elementData.selector})`;
+  btnType.style.cssText = `
+    flex: 1;
+    padding: 8px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+  `;
+  btnType.onclick = () => {
+    insertSelector(elementData.selector);
+    removeModal();
+  };
+  
+  // Кнопка для добавления уникального селектора
+  const btnUnique = document.createElement('button');
+  btnUnique.textContent = 'Уникальный';
+  btnUnique.style.cssText = `
+    flex: 1;
+    padding: 8px;
+    background: #10b981;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+  `;
+  btnUnique.onclick = () => {
+    insertSelector(elementData.uniqueSelector);
+    removeModal();
+  };
+  
+  // Кнопка отмены
+  const btnCancel = document.createElement('button');
+  btnCancel.textContent = 'Отмена';
+  btnCancel.style.cssText = `
+    flex: 1;
+    padding: 8px;
+    background: #374151;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+  `;
+  btnCancel.onclick = removeModal;
+  
+  buttonContainer.appendChild(btnType);
+  buttonContainer.appendChild(btnUnique);
+  buttonContainer.appendChild(btnCancel);
+  
+  dialog.appendChild(title);
+  dialog.appendChild(content);
+  dialog.appendChild(buttonContainer);
+  
+  modal.appendChild(dialog);
+  document.body.appendChild(modal);
+  
+  function removeModal() {
+    modal.remove();
+  }
+  
+  // Закрытие по клику на фон
+  modal.onclick = (e) => {
+    if (e.target === modal) {
+      removeModal();
+    }
+  };
+}
+
+// Функция для вставки селектора в редактор
+function insertSelector(selector) {
+  const selectedText = editor.getSelection();
+  
+  // Если есть выделённый текст, используем его как CSS код
+  if (selectedText) {
+    editor.replaceSelection(`${selector} {
+  ${selectedText}
+}`);
+  } else {
+    // Иначе добавляем селектор с заготовкой
+    editor.replaceSelection(`${selector} {
+  
+}`);
+    // Позиционируем курсор внутри блока
+    const lastLine = editor.lastLine();
+    editor.setCursor(lastLine, 2);
+  }
 }
 

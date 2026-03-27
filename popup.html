@@ -261,6 +261,45 @@
     .muted {
       opacity: 0.7;
     }
+
+      /* GitHub ссылка */
+    /* Футер с GitHub и версией */
+  .footer {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #9ca3af;
+    padding: 0 4px;
+  }
+
+  .github-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #9ca3af;
+    text-decoration: none;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .github-link:hover {
+    color: #60a5fa;
+    background: rgba(96, 165, 250, 0.08);
+  }
+
+  .github-icon {
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  .version {
+    font-family: monospace;
+    opacity: 0.75;
+    font-size: 10.5px;
+  }
   </style>
 
   <!-- CodeMirror -->
@@ -353,6 +392,19 @@
   <div class="btns">
     <button id="apply-btn" class="primary">ПРИМЕНИТЬ</button>
     <button id="reset-btn" class="secondary">СБРОСИТЬ</button>
+  </div>
+
+  <!-- Ссылка на GitHub -->
+  <div class="footer">
+    <a href="https://github.com/Meno1337/live-css-changer" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       class="github-link">
+      <span class="github-icon">🐙</span>
+      GitHub
+    </a>
+    
+    <span class="version">v1.4</span>
   </div>
 
   <script src="popup.js"></script>

@@ -4,46 +4,33 @@
   <meta charset="UTF-8">
 
   <style>
-    html,
-    body {
+    html, body {
       margin: 0;
       padding: 0;
     }
-
-    body {
-      width: 420px;
-      padding: 12px 12px 14px;
-      background: #111827;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      box-sizing: border-box;
-      color: #e5e7eb;
-      border-radius: 12px;
-      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
-      overflow: hidden;
-      opacity: 0;
-      transform: translateY(4px);
-      animation: popup-fade-in 180ms ease-out forwards;
-    }
-
+body {
+  width: 520px;        /* шире */
+  min-height: 720px;   /* увеличиваем всё окно */
+  padding: 16px;
+  background: #111827;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  box-sizing: border-box;
+  color: #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+  overflow-y: auto;    /* вертикальный скролл только если реально нужно */
+}
     @keyframes popup-fade-in {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    h3 {
-      margin: 0 0 4px;
-      font-size: 16px;
-      font-weight: 600;
-    }
+    h3 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
 
     #site-info {
       font-size: 11px;
       color: #9ca3af;
       margin-bottom: 8px;
     }
-
     .pill {
       display: inline-flex;
       align-items: center;
@@ -53,21 +40,18 @@
       background: #020617;
       border: 1px solid #1f2937;
     }
-
     .pill-dot {
-      width: 6px;
-      height: 6px;
+      width: 6px; height: 6px;
       border-radius: 999px;
       background: #22c55e;
     }
 
     #editor-container {
-      height: 190px;
+      height: 260px;
       border-radius: 8px;
       overflow: hidden;
       border: 1px solid #1f2937;
     }
-
     .CodeMirror {
       height: 100% !important;
       background: #020617;
@@ -75,43 +59,65 @@
       font-size: 13px;
     }
 
-    .section {
-      margin-top: 10px;
-    }
-
+    .section { margin-top: 10px; }
     .section-title {
       font-size: 12px;
       font-weight: 600;
       margin-bottom: 4px;
       color: #d1d5db;
     }
-
     #example-text {
       margin-top: 4px;
       font-size: 11px;
       color: #9ca3af;
     }
 
-    #quick-presets,
-    #user-presets {
+    /* Вкладки */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin: 12px 0;
+      background: #1f2937;
+      padding: 4px;
+      border-radius: 8px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 8px 12px;
+      background: transparent;
+      border: none;
+      color: #9ca3af;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: #111827;
+      color: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Быстрые пресеты */
+    #quick-presets, #user-presets {
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
-
     .preset-row {
       display: flex;
       align-items: center;
       gap: 6px;
       font-size: 11px;
     }
-
     .preset-label {
       width: 90px;
       color: #d1d5db;
       flex-shrink: 0;
     }
-
     .preset-row input[type="color"] {
       width: 32px;
       height: 20px;
@@ -120,9 +126,7 @@
       border: 1px solid #1f2937;
       background: #020617;
     }
-
-    .preset-row input[type="number"],
-    .preset-row select {
+    .preset-row input[type="number"], .preset-row select {
       flex: 1;
       padding: 3px 6px;
       border-radius: 4px;
@@ -131,12 +135,7 @@
       color: #e5e7eb;
       font-size: 11px;
     }
-
-    .preset-suffix {
-      color: #9ca3af;
-      font-size: 11px;
-    }
-
+    .preset-suffix { color: #9ca3af; font-size: 11px; }
     .preset-apply {
       padding: 4px 8px;
       font-size: 11px;
@@ -147,52 +146,15 @@
       cursor: pointer;
       flex-shrink: 0;
     }
+    .preset-apply:hover { border-color: #3b82f6; }
 
-    .preset-apply:hover {
-      border-color: #3b82f6;
-    }
-
-    .btns {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    button.primary,
-    button.secondary {
-      flex: 1;
-      padding: 9px 10px;
-      cursor: pointer;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 12px;
-      color: white;
-    }
-
-    button.primary {
-      background: linear-gradient(135deg, #2563eb, #3b82f6);
-    }
-
-    button.primary:hover {
-      filter: brightness(1.05);
-    }
-
-    button.secondary {
-      background: #374151;
-    }
-
-    button.secondary:hover {
-      filter: brightness(1.05);
-    }
-
+    /* Пользовательские пресеты */
     #user-presets-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 6px;
     }
-
     #preset-name {
       flex: 1;
       padding: 4px 6px;
@@ -202,11 +164,6 @@
       color: #e5e7eb;
       font-size: 11px;
     }
-
-    #preset-name::placeholder {
-      color: #6b7280;
-    }
-
     #save-preset-btn {
       padding: 6px 8px;
       font-size: 11px;
@@ -217,17 +174,11 @@
       color: #e5e7eb;
       white-space: nowrap;
     }
-
-    #save-preset-btn:hover {
-      filter: brightness(1.05);
-    }
-
     #user-presets-list {
       margin-top: 4px;
       display: flex;
       gap: 6px;
     }
-
     #user-presets-select {
       flex: 1;
       padding: 4px 6px;
@@ -237,13 +188,6 @@
       color: #e5e7eb;
       font-size: 11px;
     }
-
-    #user-presets-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
     #user-presets-actions button {
       padding: 4px 6px;
       font-size: 11px;
@@ -254,157 +198,413 @@
       color: #e5e7eb;
     }
 
-    #user-presets-actions button:hover {
-      filter: brightness(1.05);
+    .btns {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    button.primary, button.secondary {
+      flex: 1;
+      padding: 9px 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12px;
+      color: white;
+    }
+    button.primary { background: linear-gradient(135deg, #2563eb, #3b82f6); }
+    button.primary:hover { filter: brightness(1.05); }
+    button.secondary { background: #374151; }
+    button.secondary:hover { filter: brightness(1.05); }
+
+    /* Футер */
+    .footer {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #9ca3af;
+      padding: 0 4px;
+    }
+    .github-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #9ca3af;
+      text-decoration: none;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+    .github-link:hover {
+      color: #60a5fa;
+      background: rgba(96, 165, 250, 0.08);
+    }
+    .github-icon { font-size: 15px; line-height: 1; }
+    .version {
+      font-family: monospace;
+      opacity: 0.75;
+      font-size: 10.5px;
     }
 
-    .muted {
-      opacity: 0.7;
+    /* Генератор тем */
+    .theme-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .theme-btn {
+      padding: 12px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .theme-btn.dark { background: #1e2937; color: #e0f2fe; }
+    .theme-btn.light { background: #f1f5f9; color: #0f172a; }
+    .theme-btn.highcontrast { 
+      background: #000; 
+      color: #fff; 
+      border: 2px solid #ffd700; 
     }
 
-      /* GitHub ссылка */
-    /* Футер с GitHub и версией */
-  .footer {
-    margin-top: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 11px;
-    color: #9ca3af;
-    padding: 0 4px;
-  }
+    /* =========================
+   КНОПКА ПЕРЕКЛЮЧЕНИЯ ТЕМЫ
+========================= */
+.theme-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #1f2937;
+  background: #1f2937;
+  color: #facc15;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
 
-  .github-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: #9ca3af;
-    text-decoration: none;
-    padding: 4px 8px;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-  }
+.theme-toggle:hover {
+  background: #374151;
+  transform: scale(1.05);
+}
 
-  .github-link:hover {
-    color: #60a5fa;
-    background: rgba(96, 165, 250, 0.08);
-  }
+/* =========================
+   ПОЛНОЦЕННАЯ СВЕТЛАЯ ТЕМА
+========================= */
 
-  .github-icon {
-    font-size: 15px;
-    line-height: 1;
-  }
+body.light-theme {
+  background: #ffffff;
+  color: #111827;
+}
 
-  .version {
-    font-family: monospace;
-    opacity: 0.75;
-    font-size: 10.5px;
-  }
+/* Панель вкладок */
+body.light-theme .tabs {
+  background: #f3f4f6;
+}
+
+body.light-theme .tab-btn {
+  color: #6b7280;
+}
+
+body.light-theme .tab-btn.active {
+  background: #ffffff;
+  color: #111827;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+/* Редактор */
+body.light-theme #editor-container {
+  border-color: #d1d5db;
+}
+
+body.light-theme .CodeMirror {
+  background: #ffffff !important;
+  color: #111827 !important;
+}
+
+/* Инпуты */
+body.light-theme input,
+body.light-theme select,
+body.light-theme textarea {
+  background: #ffffff !important;
+  color: #111827 !important;
+  border: 1px solid #d1d5db !important;
+}
+
+/* Цветовые поля */
+body.light-theme .preset-row input[type="color"] {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+}
+
+/* Кнопки вторичные */
+body.light-theme .preset-apply,
+body.light-theme #save-preset-btn,
+body.light-theme #user-presets-actions button {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+/* Сброс */
+body.light-theme button.secondary {
+  background: #d1d5db;
+  color: #111827;
+}
+
+/* Footer */
+body.light-theme .footer {
+  color: #6b7280;
+}
+
+/* ========================
+   СПИСОК ПРЕСЕТОВ
+======================== */
+.presets-list {
+  margin-top: 12px;
+  max-height: 320px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.preset-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 6px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.preset-item:hover {
+  background: #334155;
+  border-color: #4b5563;
+}
+
+.preset-name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: #e5e7eb;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preset-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.preset-actions button {
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.preset-apply-btn {
+  background: #3b82f6;
+  color: white;
+}
+
+.preset-delete-btn {
+  background: #ef4444;
+  color: white;
+}
+
+body.light-theme .preset-item {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+body.light-theme .preset-item:hover {
+  background: #e0f2fe;
+  border-color: #38bdf8;
+}
+
+body.light-theme .preset-name {
+  color: #0f172a;
+}
+
+.danger-small {
+  width: 42px;
+  padding: 0;
+  background: #ef4444;
+  color: white;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.danger-small:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+body.light-theme .danger-small {
+  background: #dc2626;
+}
   </style>
 
   <!-- CodeMirror -->
   <link rel="stylesheet" href="codemirror-5.65.21/lib/codemirror.css">
   <link rel="stylesheet" href="codemirror-5.65.21/addon/hint/show-hint.css">
-
   <script src="codemirror-5.65.21/lib/codemirror.js"></script>
   <script src="codemirror-5.65.21/mode/css/css.js"></script>
-
   <script src="codemirror-5.65.21/addon/hint/show-hint.js"></script>
   <script src="codemirror-5.65.21/addon/hint/css-hint.js"></script>
 </head>
-
 <body>
+
   <div id="site-info">
     <span class="pill">
       <span class="pill-dot"></span>
       <span id="site-label">Текущая вкладка</span>
     </span>
+    <button id="theme-toggle" class="theme-toggle" title="Переключить тему">☀️</button>
   </div>
 
   <h3>Live CSS Editor</h3>
 
-  <div id="editor-container"></div>
-
-  <div id="example-text">
-    Пример: <code>* { background-color: red; }</code>
+  <!-- Вкладки -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="editor">Редактор</button>
+    <button class="tab-btn" data-tab="presets">Пресеты</button>
+    <button class="tab-btn" data-tab="accessibility">Специальные возможности</button>
   </div>
 
-  <div class="section" id="quick-presets">
-    <div class="section-title">Быстрые пресеты</div>
-
-    <div class="preset-row">
-      <span class="preset-label">Цвет фона</span>
-      <input type="color" id="bg-color-input" value="#ffffff">
-      <button id="preset-bg-btn" class="preset-apply">OK</button>
+  <!-- Вкладка Редактор -->
+  <div id="tab-editor" class="tab-content active">
+    <div id="editor-container"></div>
+    <div id="example-text">
+      Пример: <code>* { background-color: red; }</code>
     </div>
 
-    <div class="preset-row">
-      <span class="preset-label">Размер текста</span>
-      <input type="number" id="font-size-input" min="8" max="72" value="18">
-      <span class="preset-suffix">px</span>
-      <button id="preset-fontsize-btn" class="preset-apply">OK</button>
-    </div>
+    <div class="section" id="quick-presets">
+      <div class="section-title">Быстрые пресеты</div>
+      <div class="preset-row">
+        <span class="preset-label">Цвет фона</span>
+        <input type="color" id="bg-color-input" value="#ffffff">
+        <button id="preset-bg-btn" class="preset-apply">OK</button>
+      </div>
+      <div class="preset-row">
+        <span class="preset-label">Размер текста</span>
+        <input type="number" id="font-size-input" min="8" max="72" value="18">
+        <span class="preset-suffix">px</span>
+        <button id="preset-fontsize-btn" class="preset-apply">OK</button>
+      </div>
+      <div class="preset-row">
+        <span class="preset-label">Шрифт</span>
+        <select id="font-family-select">
+          <option value="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">System UI</option>
+          <option value="Arial, Helvetica, sans-serif">Arial</option>
+          <option value="'Roboto', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">Roboto</option>
+          <option value="Georgia, 'Times New Roman', serif">Georgia</option>
+          <option value="'Courier New', Courier, monospace">Courier New</option>
+        </select>
+        <button id="preset-fontfamily-btn" class="preset-apply">OK</button>
+      </div>
+      <!-- Цвет текста -->
+<div class="preset-row">
+  <span class="preset-label">Цвет текста</span>
+  <input type="color" id="text-color-input" value="#000000">
+  <button id="preset-textcolor-btn" class="preset-apply">OK</button>
+</div>
 
-    <div class="preset-row">
-      <span class="preset-label">Шрифт</span>
-      <select id="font-family-select">
-        <option
-          value="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
-          System UI
-        </option>
-        <option value="Arial, Helvetica, sans-serif">Arial</option>
-        <option
-          value="'Roboto', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
-          Roboto (fallback)
-        </option>
-        <option
-          value="'Open Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
-          Open Sans (fallback)
-        </option>
-        <option
-          value="'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
-          Montserrat (fallback)
-        </option>
-        <option value="Georgia, 'Times New Roman', serif">Georgia</option>
-        <option value="'Courier New', Courier, monospace">Courier New</option>
-      </select>
-      <button id="preset-fontfamily-btn" class="preset-apply">OK</button>
+<!-- Межстрочный интервал -->
+<div class="preset-row">
+  <span class="preset-label">Интервал строк</span>
+  <input type="number" id="line-height-input" min="1" max="3" step="0.1" value="1.5">
+  <button id="preset-lineheight-btn" class="preset-apply">OK</button>
+</div>
+
+<!-- Скругление углов -->
+<div class="preset-row">
+  <span class="preset-label">Скругление</span>
+  <input type="number" id="radius-input" min="0" max="50" value="8">
+  <span class="preset-suffix">px</span>
+  <button id="preset-radius-btn" class="preset-apply">OK</button>
+</div>
+
+<!-- Увеличить кнопки -->
+<div class="preset-row">
+  <span class="preset-label">Крупные кнопки</span>
+  <button id="preset-bigbuttons-btn" class="preset-apply">Применить</button>
+</div>
+
+<!-- Скрыть изображения -->
+<div class="preset-row">
+  <span class="preset-label">Скрыть картинки</span>
+  <button id="preset-hideimg-btn" class="preset-apply">Применить</button>
+</div>
+
+<!-- Ч/Б режим -->
+<div class="preset-row">
+  <span class="preset-label">Ч/Б режим</span>
+  <button id="preset-grayscale-btn" class="preset-apply">Применить</button>
+</div>
     </div>
   </div>
 
+  <!-- Вкладка Пресеты -->
+<!-- Вкладка Пресеты -->
+<div id="tab-presets" class="tab-content">
   <div class="section" id="user-presets">
     <div class="section-title">Мои пресеты</div>
+    
     <div id="user-presets-header">
       <input id="preset-name" type="text" placeholder="Название пресета">
-      <button id="save-preset-btn">Сохранить</button>
+      <button id="save-preset-btn">Сохранить текущий</button>
     </div>
-    <div id="user-presets-list">
-      <select id="user-presets-select">
-        <option value="">Нет сохранённых пресетов</option>
-      </select>
-      <div id="user-presets-actions">
-        <button id="apply-user-preset-btn">Применить</button>
-        <button id="delete-user-preset-btn" class="muted">Удалить</button>
+
+    <div id="presets-list" class="presets-list"></div>
+  </div>
+</div>
+
+  <!-- Вкладка Специальные возможности -->
+  <div id="tab-accessibility" class="tab-content">
+    <div class="section">
+      <div class="section-title">Генератор тем оформления</div>
+      <p style="font-size:12px; color:#9ca3af; margin-bottom:12px;">
+        Автоматически создаёт CSS для принудительного применения темы
+      </p>
+      <div class="theme-buttons">
+        <button id="theme-dark" class="theme-btn dark">🌙 Тёмная тема</button>
+        <button id="theme-light" class="theme-btn light">☀️ Светлая тема</button>
+        <button id="theme-highcontrast" class="theme-btn highcontrast">👁️ Высокий контраст (для слабовидящих)</button>
       </div>
     </div>
   </div>
 
-  <div class="btns">
-    <button id="apply-btn" class="primary">ПРИМЕНИТЬ</button>
-    <button id="reset-btn" class="secondary">СБРОСИТЬ</button>
-  </div>
+<div class="btns">
+  <button id="apply-btn" class="primary">ПРИМЕНИТЬ</button>
+  <button id="reset-btn" class="secondary">СБРОСИТЬ</button>
+  <button id="clear-editor-btn" class="danger-small" title="Очистить редактор">🗑</button>
+</div>
 
-  <!-- Ссылка на GitHub -->
   <div class="footer">
-    <a href="https://github.com/Meno1337/live-css-changer" 
-       target="_blank" 
-       rel="noopener noreferrer"
-       class="github-link">
-      <span class="github-icon">🐙</span>
-      GitHub
+    <a href="https://github.com/Meno1337/live-css-changer" target="_blank" rel="noopener noreferrer" class="github-link">
+      <span class="github-icon">🐙</span> GitHub
     </a>
-    
-    <span class="version">v1.4</span>
+    <span class="version">v1.5</span>
   </div>
 
   <script src="popup.js"></script>

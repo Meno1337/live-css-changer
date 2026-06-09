@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Live CSS Editor",
-  "version": "1.5",
+  "version": "1.6",
   "description": "Live CSS Editor for editing website styles",
   "permissions": [
     "scripting",

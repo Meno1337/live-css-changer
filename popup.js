@@ -75,26 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
 editor.on("change", () => {
   chrome.storage.local.set({ editorText: editor.getValue() });
 });
-  // =========================
-  // ИНИЦИАЛИЗАЦИЯ БЫСТРЫХ ПРЕСЕТОВ
-  // =========================
-  if (themeToggle) {
-    chrome.storage.local.get(['popupTheme'], (res) => {
-    const savedTheme = res.popupTheme || 'dark'; // ← по умолчанию тёмная
-    applyTheme(savedTheme === 'light');
-  });
-
-    themeToggle.addEventListener('click', () => {
-      const isLight = document.body.classList.contains('light-theme');
-      const newTheme = isLight ? 'dark' : 'light';
-      chrome.storage.local.set({ popupTheme: newTheme });
-      applyTheme(!isLight);
-    });
-  }
-
-editor.on("change", () => {
-  chrome.storage.local.set({ editorText: editor.getValue() });
-});
 
 // === Управление вкладками ===
 function initTabs() {
@@ -202,6 +182,166 @@ document.getElementById("preset-bg-btn").addEventListener("click", () => {
 }`);
 });
 
+function registerPreset(id, css) {
+  document.getElementById(id)?.addEventListener("click", () => {
+    applyPreset(css);
+  });
+}
+
+registerPreset("preset-bigcursor-btn", `* {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><circle cx="16" cy="16" r="10" fill="black"/><circle cx="16" cy="16" r="8" fill="white"/></svg>') 16 16, auto !important;
+}`);
+
+registerPreset("preset-noanimation-btn", `*, *::before, *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}`);
+
+registerPreset("preset-underlinelinks-btn", `a {
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+}`);
+
+registerPreset("preset-invert-btn", `html {
+  filter: invert(100%) hue-rotate(180deg) !important;
+}
+
+img,
+video,
+picture,
+canvas {
+  filter: invert(100%) hue-rotate(180deg) !important;
+}`);
+
+registerPreset("preset-yellowblack-btn", `* {
+  background-color: #000 !important;
+  color: #ffff00 !important;
+}
+
+a {
+  color: #00ff00 !important;
+}`);
+
+registerPreset("preset-nobg-btn", `* {
+  background-image: none !important;
+}`);
+
+registerPreset("preset-contrast-btn", `html {
+  filter: contrast(150%) !important;
+}`);
+
+registerPreset("preset-focus-btn", `*:focus {
+  outline: 3px solid #ff0 !important;
+  outline-offset: 2px !important;
+}
+
+a:focus,
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  box-shadow: 0 0 0 4px rgba(255,255,0,.5) !important;
+}`);
+
+registerPreset("preset-clickarea-btn", `a,
+button,
+input,
+select,
+textarea {
+  min-height: 44px !important;
+  min-width: 44px !important;
+}`);
+
+registerPreset("preset-protanopia-btn", `html {
+  filter:
+    contrast(1.2)
+    saturate(0.8)
+    hue-rotate(20deg) !important;
+}`);
+
+registerPreset("preset-deuteranopia-btn", `html {
+  filter:
+    contrast(1.1)
+    saturate(0.9)
+    hue-rotate(-10deg) !important;
+}`);
+
+registerPreset("preset-tritanopia-btn", `html {
+  filter:
+    contrast(1.15)
+    saturate(0.85)
+    hue-rotate(90deg) !important;
+}`);
+
+registerPreset("preset-reader-btn", `body * {
+  max-width: 800px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+* {
+  font-family: Georgia, "Times New Roman", serif !important;
+  line-height: 1.8 !important;
+  font-size: 18px !important;
+}`);
+
+registerPreset("preset-dyslexia-btn", `* {
+  font-family: "OpenDyslexic","Comic Sans MS",Arial !important;
+  letter-spacing: .05em !important;
+  word-spacing: .1em !important;
+  line-height: 1.8 !important;
+}`);
+
+registerPreset("preset-sepia-btn", `html {
+  filter: sepia(80%) !important;
+}`);
+
+registerPreset("preset-nightmode-btn", `html {
+  filter: brightness(.9) contrast(1.1) sepia(20%) !important;
+}
+
+* {
+  background-color: #1a1a1a !important;
+  color: #e0e0e0 !important;
+}`);
+
+registerPreset("preset-headers-btn", `h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  background-color: #ffeb3b !important;
+  color: #000 !important;
+  padding: 8px !important;
+  border-left: 5px solid #f44336 !important;
+  font-weight: bold !important;
+}`);
+
+registerPreset("preset-bigbuttons-btn", `button,
+[role="button"],
+.btn,
+a.button,
+input[type="button"],
+input[type="submit"] {
+  font-size: 22px !important;
+  padding: 16px 28px !important;
+  min-width: 56px !important;
+  min-height: 56px !important;
+}`);
+
+registerPreset("preset-hideimg-btn", `img,
+picture,
+video {
+  display: none !important;
+}`);
+
+registerPreset("preset-grayscale-btn", `html {
+  filter: grayscale(100%) !important;
+}`);
+
 function upsertGlobalStyle(property, value) {
   let css = editor.getValue();
   const ruleRegex = /\*\s*\{([\s\S]*?)\}/m;
@@ -263,9 +403,11 @@ document.getElementById("preset-radius-btn")?.addEventListener("click", () => {
 
 // Крупные кнопки
 document.getElementById("preset-bigbuttons-btn")?.addEventListener("click", () => {
-  editor.replaceSelection(`button, input[type="button"], input[type="submit"] {
+  editor.replaceSelection(`button,[role="button"],a.button,.btn,input[type="button"],input[type="submit"] {
   font-size: 18px !important;
   padding: 12px 20px !important;
+  min-height: 44px !important;
+  min-width: 44px !important;
 }`);
 });
 
@@ -282,6 +424,299 @@ document.getElementById("preset-grayscale-btn")?.addEventListener("click", () =>
   filter: grayscale(100%) !important;
 }`);
 });
+
+// Большой курсор
+document.getElementById("preset-bigcursor-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`* {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><circle cx="16" cy="16" r="10" fill="black"/><circle cx="16" cy="16" r="8" fill="white"/></svg>') 16 16, auto !important;
+}`);
+});
+
+// Без анимаций
+document.getElementById("preset-noanimation-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`*, *::before, *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}`);
+});
+
+// Подчеркнуть ссылки
+document.getElementById("preset-underlinelinks-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`a {
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+}`);
+});
+
+// Межбуквенный интервал
+document.getElementById("preset-letterspacing-btn")?.addEventListener("click", () => {
+  const raw = parseFloat(document.getElementById("letter-spacing-input")?.value);
+  const value = isNaN(raw) ? 0.05 : Math.min(0.3, Math.max(0, raw));
+
+  editor.replaceSelection(`* {
+  letter-spacing: ${value}em !important;
+}`);
+});
+
+// Инверсия цветов
+document.getElementById("preset-invert-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`html {
+  filter: invert(100%) hue-rotate(180deg) !important;
+}
+
+img,
+video,
+picture,
+canvas {
+  filter: invert(100%) hue-rotate(180deg) !important;
+}`);
+});
+
+// Желтый на черном
+document.getElementById("preset-yellowblack-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`* {
+  background-color: #000 !important;
+  color: #ffff00 !important;
+}
+
+a {
+  color: #00ff00 !important;
+}`);
+});
+
+// Удалить фоновые изображения
+document.getElementById("preset-nobg-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`* {
+  background-image: none !important;
+}`);
+});
+
+// Повышенный контраст
+document.getElementById("preset-contrast-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`html {
+  filter: contrast(150%) !important;
+}`);
+});
+
+// Видимый фокус
+document.getElementById("preset-focus-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`*:focus {
+  outline: 3px solid #ff0 !important;
+  outline-offset: 2px !important;
+}
+
+a:focus,
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  box-shadow: 0 0 0 4px rgba(255,255,0,.5) !important;
+}`);
+});
+
+// Увеличить интерактивные элементы
+document.getElementById("preset-clickarea-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`a,
+button,
+input,
+select,
+textarea {
+  min-height: 44px !important;
+  min-width: 44px !important;
+}`);
+});
+
+// Protanopia
+document.getElementById("preset-protanopia-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`html {
+  filter:
+    contrast(1.2)
+    saturate(0.8)
+    hue-rotate(20deg) !important;
+}`);
+});
+
+// Магнитный курсор
+document.getElementById("preset-magneticcursor-btn")
+?.addEventListener("click", () => {
+  applyPreset(`a,
+button,
+[role="button"],
+.btn,
+input[type="button"],
+input[type="submit"] {
+  transition: transform .15s ease !important;
+}
+
+a:hover,
+button:hover,
+[role="button"]:hover,
+.btn:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover {
+  transform: scale(1.15) !important;
+  position: relative !important;
+  z-index: 9999 !important;
+}`);
+});
+
+// Deuteranopia
+document.getElementById("preset-deuteranopia-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`html {
+  filter:
+    contrast(1.1)
+    saturate(0.9)
+    hue-rotate(-10deg) !important;
+}`);
+});
+
+// Tritanopia
+document.getElementById("preset-tritanopia-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`html {
+  filter:
+    contrast(1.15)
+    saturate(0.85)
+    hue-rotate(90deg) !important;
+}`);
+});
+
+// Режим чтения
+document.getElementById("preset-reader-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`body * {
+  max-width: 800px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+* {
+  font-family: Georgia, "Times New Roman", serif !important;
+  line-height: 1.8 !important;
+  font-size: 18px !important;
+}
+
+img,
+video {
+  max-width: 100% !important;
+  height: auto !important;
+}`);
+});
+
+// Для дислексии
+document.getElementById("preset-dyslexia-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`* {
+  font-family: "OpenDyslexic","Comic Sans MS",Arial !important;
+  letter-spacing: 0.05em !important;
+  word-spacing: 0.1em !important;
+  line-height: 1.8 !important;
+}`);
+});
+
+// Сепия
+document.getElementById("preset-sepia-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`html {
+  filter: sepia(80%) !important;
+}`);
+});
+
+// Ночной режим
+document.getElementById("preset-nightmode-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`html {
+  filter: brightness(0.9) contrast(1.1) sepia(20%) !important;
+}
+
+* {
+  background-color: #1a1a1a !important;
+  color: #e0e0e0 !important;
+}`);
+});
+
+// Выделение заголовков
+document.getElementById("preset-headers-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  background-color: #ffeb3b !important;
+  color: #000 !important;
+  padding: 8px !important;
+  border-left: 5px solid #f44336 !important;
+  font-weight: bold !important;
+}`);
+});
+
+// Дополнительный межстрочный интервал
+document.getElementById("preset-extra-lineheight-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`* {
+  line-height: 2 !important;
+}`);
+});
+
+// Ограничение длины строки
+document.getElementById("preset-readablewidth-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`body {
+  max-width: 70ch !important;
+  margin: auto !important;
+}`);
+});
+
+// Подсветка интерактивных элементов
+document.getElementById("preset-highlightinteractive-btn")?.addEventListener("click", () => {
+  editor.replaceSelection(`a,
+button,
+input,
+select,
+textarea {
+  border: 2px solid currentColor !important;
+}`);
+});
+
+async function applyPreset(css) {
+  editor.setValue(css);
+
+  setTimeout(() => {
+    editor.refresh();
+    editor.focus();
+  }, 0);
+
+  document.querySelector('[data-tab="editor"]')?.classList.add("active");
+  document.getElementById("tab-editor")?.classList.add("active");
+
+  chrome.storage.local.set({ editorText: css });
+
+  const info = await getCurrentTabInfo();
+
+  if (info) {
+    chrome.storage.local.set({
+      [info.hostname]: { css }
+    });
+  }
+
+  await applyCss(css);
+
+  const editorContainer =
+    document.getElementById("editor-container");
+
+  editorContainer?.animate(
+    [
+      {
+        boxShadow: "0 0 0 rgba(59,130,246,0)"
+      },
+      {
+        boxShadow: "0 0 18px rgba(59,130,246,.9)"
+      },
+      {
+        boxShadow: "0 0 0 rgba(59,130,246,0)"
+      }
+    ],
+    {
+      duration: 500
+    }
+  );
+}
 
 function initUserPresets() {
   const saveBtn = document.getElementById("save-preset-btn");
@@ -319,15 +754,14 @@ function initUserPresets() {
       // Клик по всей строке (кроме кнопок) — применить
       item.addEventListener("click", (e) => {
         if (!e.target.closest("button")) {
-          editor.setValue(presets[name]);
-          document.querySelector('[data-tab="editor"]').click();
+          applyPreset(presets[name]);
         }
       });
 
       // Кнопка Применить
-      item.querySelector(".preset-apply-btn").addEventListener("click", () => {
-        editor.setValue(presets[name]);
-        document.querySelector('[data-tab="editor"]').click();
+      item.querySelector(".preset-apply-btn")
+      .addEventListener("click", () => {
+      applyPreset(presets[name]);
       });
 
       // Кнопка Удалить
@@ -339,6 +773,10 @@ function initUserPresets() {
             renderPresets(presets);
           });
         }
+      setTimeout(() => {
+        editor.refresh();
+        editor.focus();
+      }, 0);
       });
 
       listContainer.appendChild(item);
@@ -412,7 +850,7 @@ button, input, select, textarea {
 ['dark','light','highcontrast'].forEach(theme => {
   const btn = document.getElementById(`theme-${theme}`);
   if (btn) btn.addEventListener('click', () => {
-    editor.setValue(themeGenerators[theme]());
+    applyPreset(themeGenerators[theme]());
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.getElementById('tab-editor').classList.add('active');

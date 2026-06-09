@@ -487,6 +487,50 @@ body.light-theme .danger-small {
   background-color: #cbd5e1;
   border-color: #94a3b8;
 }
+
+.preset-grid {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 8px;
+margin-top: 8px;
+}
+
+.preset-grid button {
+padding: 10px 12px;
+border: 1px solid #374151;
+background: #1f2937;
+color: #e5e7eb;
+border-radius: 8px;
+cursor: pointer;
+font-size: 12px;
+transition: all .2s ease;
+}
+
+.preset-grid button:hover {
+background: #334155;
+border-color: #3b82f6;
+}
+
+.light-theme .preset-grid button {
+background: #f8fafc;
+color: #111827;
+border-color: #cbd5e1;
+}
+
+.light-theme .preset-grid button:hover {
+background: #e2e8f0;
+}
+
+#tab-accessibility .section {
+margin-bottom: 18px;
+}
+
+#tab-accessibility .section-title {
+margin-bottom: 8px;
+font-size: 13px;
+font-weight: 700;
+}
+
   </style>
 
   <!-- CodeMirror -->
@@ -605,19 +649,126 @@ body.light-theme .danger-small {
 </div>
 
   <!-- Вкладка Специальные возможности -->
-  <div id="tab-accessibility" class="tab-content">
-    <div class="section">
-      <div class="section-title">Генератор тем оформления</div>
-      <p style="font-size:12px; color:#9ca3af; margin-bottom:12px;">
-        Автоматически создаёт CSS для принудительного применения темы
-      </p>
-      <div class="theme-buttons">
-        <button id="theme-dark" class="theme-btn dark">🌙 Тёмная тема</button>
-        <button id="theme-light" class="theme-btn light">☀️ Светлая тема</button>
-        <button id="theme-highcontrast" class="theme-btn highcontrast">👁️ Высокий контраст (для слабовидящих)</button>
-      </div>
-    </div>
+<div id="tab-accessibility" class="tab-content">
+
+  <!-- Темы -->
+
+  <div class="section">
+    <div class="section-title">🎨 Темы оформления</div>
+
+```
+<div class="theme-buttons">
+  <button id="theme-dark" class="theme-btn dark">🌙 Тёмная тема</button>
+  <button id="theme-light" class="theme-btn light">☀️ Светлая тема</button>
+  <button id="theme-highcontrast" class="theme-btn highcontrast">
+    👁️ Высокий контраст
+  </button>
+</div>
+```
+
   </div>
+
+  <!-- Зрение -->
+
+  <div class="section">
+    <div class="section-title">👁️ Зрение</div>
+
+```
+<div class="preset-grid">
+  <button id="preset-bigcursor-btn">🖱️ Большой курсор</button>
+  <button id="preset-underlinelinks-btn">🔗 Подчеркнуть ссылки</button>
+  <button id="preset-invert-btn">🔄 Инверсия</button>
+  <button id="preset-contrast-btn">🔆 Контраст</button>
+  <button id="preset-yellowblack-btn">⚡ Жёлтый / Чёрный</button>
+  <button id="preset-sepia-btn">🟤 Сепия</button>
+  <button id="preset-nightmode-btn">🌙 Ночной режим</button>
+  <button id="preset-headers-btn">📌 Выделить заголовки</button>
+</div>
+```
+
+  </div>
+
+  <!-- Навигация -->
+
+  <div class="section">
+    <div class="section-title">⌨️ Навигация</div>
+
+```
+<div class="preset-grid">
+  <button id="preset-focus-btn">🎯 Видимый фокус</button>
+  <button id="preset-clickarea-btn">👆 Увеличить интерактивные элементы</button>
+  <button id="preset-bigbuttons-btn">🔘 Крупные кнопки</button>
+  <button id="preset-magneticcursor-btn">🧲 Магнитный курсор</button>
+</div>
+```
+
+  </div>
+
+  <!-- Читаемость -->
+
+  <div class="section">
+    <div class="section-title">📖 Читаемость</div>
+
+```
+<div class="preset-grid">
+  <button id="preset-reader-btn">📚 Режим чтения</button>
+  <button id="preset-dyslexia-btn">📝 Для дислексии</button>
+  <button id="preset-extra-lineheight-btn">📏 Большой интервал</button>
+  <button id="preset-readablewidth-btn">📄 Узкая колонка</button>
+</div>
+
+<div class="preset-row">
+  <span class="preset-label">Буквенный интервал</span>
+
+  <input
+    id="letter-spacing-input"
+    type="number"
+    min="0"
+    max="0.3"
+    step="0.01"
+    value="0.05">
+
+  <button id="preset-letterspacing-btn" class="preset-apply">
+    OK
+  </button>
+</div>
+```
+
+  </div>
+
+  <!-- Цветовое восприятие -->
+
+  <div class="section">
+    <div class="section-title">🎨 Цветовое восприятие</div>
+
+```
+<div class="preset-grid">
+  <button id="preset-protanopia-btn">🔴 Protanopia</button>
+  <button id="preset-deuteranopia-btn">🟢 Deuteranopia</button>
+  <button id="preset-tritanopia-btn">🔵 Tritanopia</button>
+</div>
+```
+
+  </div>
+
+  <!-- Упрощение -->
+
+  <div class="section">
+    <div class="section-title">🧹 Упрощение страницы</div>
+
+```
+<div class="preset-grid">
+  <button id="preset-hideimg-btn">🖼️ Скрыть изображения</button>
+  <button id="preset-nobg-btn">🚫 Убрать фон</button>
+  <button id="preset-grayscale-btn">⚫ Ч/Б режим</button>
+  <button id="preset-noanimation-btn">⏸️ Без анимаций</button>
+</div>
+```
+
+  </div>
+
+</div>
+
 
 <div class="btns">
   <button id="apply-btn" class="primary">ПРИМЕНИТЬ</button>

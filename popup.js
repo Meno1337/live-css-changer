@@ -56,11 +56,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Инициализация кнопки смены темы
   themeToggle = document.getElementById('theme-toggle');
+  
+  if (themeToggle) {
+    chrome.storage.local.get(['popupTheme'], (res) => {
+      const savedTheme = res.popupTheme || 'dark'; // ← по умолчанию тёмная
+      applyTheme(savedTheme === 'light');
+    });
+
+    themeToggle.addEventListener('click', () => {
+      const isLight = document.body.classList.contains('light-theme');
+      const newTheme = isLight ? 'dark' : 'light';
+      chrome.storage.local.set({ popupTheme: newTheme });
+      applyTheme(!isLight);
+    });
+  }
+}); // ← ПРАВИЛЬНОЕ ЗАКРЫТИЕ DOMContentLoaded
+
+editor.on("change", () => {
+  chrome.storage.local.set({ editorText: editor.getValue() });
+});
   // =========================
   // ИНИЦИАЛИЗАЦИЯ БЫСТРЫХ ПРЕСЕТОВ
   // =========================
-
-  });
   if (themeToggle) {
     chrome.storage.local.get(['popupTheme'], (res) => {
     const savedTheme = res.popupTheme || 'dark'; // ← по умолчанию тёмная
